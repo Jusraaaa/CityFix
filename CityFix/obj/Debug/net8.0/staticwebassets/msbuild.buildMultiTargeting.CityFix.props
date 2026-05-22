@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/CityFix.props" />
-</Project>
