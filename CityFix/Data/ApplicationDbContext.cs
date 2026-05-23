@@ -11,6 +11,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Category> Categories => Set<Category>();
 
+    public DbSet<AppUser> Users => Set<AppUser>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -28,14 +30,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .IsRequired();
 
             entity.Property(x => x.ImageUrl)
-                .HasMaxLength(500);
+                .HasColumnType("nvarchar(max)");
 
-            entity.HasOne<Municipality>()
+            entity.HasOne(x => x.Municipality)
                 .WithMany()
                 .HasForeignKey(x => x.MunicipalityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne<Category>()
+            entity.HasOne(x => x.Category)
                 .WithMany()
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -65,6 +67,31 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(x => x.Description)
                 .HasMaxLength(500)
                 .IsRequired();
+        });
+
+        modelBuilder.Entity<AppUser>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.FullName)
+                .HasMaxLength(150)
+                .IsRequired();
+
+            entity.Property(x => x.Email)
+                .HasMaxLength(256)
+                .IsRequired();
+
+            entity.HasIndex(x => x.Email)
+                .IsUnique();
+
+            entity.Property(x => x.PasswordHash)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            entity.HasOne(x => x.Municipality)
+                .WithMany()
+                .HasForeignKey(x => x.MunicipalityId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }

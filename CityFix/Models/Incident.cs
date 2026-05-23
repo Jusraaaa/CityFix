@@ -18,7 +18,11 @@ public class Incident
 
     public Guid MunicipalityId { get; set; }
 
+    public Municipality? Municipality { get; set; }
+
     public Guid CategoryId { get; set; }
+
+    public Category? Category { get; set; }
 
     public IncidentStatus Status { get; set; } = IncidentStatus.Pending;
 

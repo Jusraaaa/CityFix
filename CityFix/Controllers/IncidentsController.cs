@@ -12,19 +12,51 @@ namespace CityFix.Controllers;
 public class IncidentsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Incident>>> GetIncidents()
+    public async Task<ActionResult<IEnumerable<IncidentResponse>>> GetIncidents()
     {
         var incidents = await dbContext.Incidents
             .OrderByDescending(x => x.CreatedAt)
+            .Select(x => new IncidentResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                ImageUrl = x.ImageUrl,
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
+                Status = x.Status,
+                CreatedAt = x.CreatedAt,
+                MunicipalityId = x.MunicipalityId,
+                MunicipalityName = x.Municipality != null ? x.Municipality.Name : string.Empty,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category != null ? x.Category.Name : string.Empty
+            })
             .ToListAsync();
 
         return Ok(incidents);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Incident>> GetIncident(Guid id)
+    public async Task<ActionResult<IncidentResponse>> GetIncident(Guid id)
     {
-        var incident = await dbContext.Incidents.FindAsync(id);
+        var incident = await dbContext.Incidents
+            .Where(x => x.Id == id)
+            .Select(x => new IncidentResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                ImageUrl = x.ImageUrl,
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
+                Status = x.Status,
+                CreatedAt = x.CreatedAt,
+                MunicipalityId = x.MunicipalityId,
+                MunicipalityName = x.Municipality != null ? x.Municipality.Name : string.Empty,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category != null ? x.Category.Name : string.Empty
+            })
+            .FirstOrDefaultAsync();
 
         if (incident is null)
         {
