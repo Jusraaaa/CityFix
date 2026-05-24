@@ -12,11 +12,27 @@ public class IncidentResponse
 
     public string? ImageUrl { get; set; }
 
+    public string? AdminNote { get; set; }
+
+    public string? ResolutionNote { get; set; }
+
+    public string? ResolutionImageUrl { get; set; }
+
+    public DateTime? ResolvedAt { get; set; }
+
+    public Guid? ResolvedByUserId { get; set; }
+
+    public Guid? CreatedByUserId { get; set; }
+
     public double Latitude { get; set; }
 
     public double Longitude { get; set; }
 
     public IncidentStatus Status { get; set; }
+
+    public PriorityLevel PriorityLevel { get; set; }
+
+    public Department Department { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

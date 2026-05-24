@@ -22,6 +22,8 @@ public class AppUser
 
     public UserRole Role { get; set; } = UserRole.Citizen;
 
+    public bool IsActive { get; set; } = true;
+
     public Guid? MunicipalityId { get; set; }
 
     public Municipality? Municipality { get; set; }

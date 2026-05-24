@@ -1,3 +1,5 @@
+using CityFix.Enums;
+
 namespace CityFix.DTOs;
 
 public class CreateIncidentRequest
@@ -15,4 +17,8 @@ public class CreateIncidentRequest
     public Guid MunicipalityId { get; set; }
 
     public Guid CategoryId { get; set; }
+
+    public PriorityLevel PriorityLevel { get; set; } = PriorityLevel.Low;
+
+    public Department Department { get; set; } = Department.Sanitation;
 }

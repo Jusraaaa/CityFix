@@ -4,6 +4,7 @@ using CityFix.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityFix.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260523230551_AddIncidentStatusHistory")]
+    partial class AddIncidentStatusHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +43,6 @@ namespace CityFix.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<Guid?>("MunicipalityId")
                         .HasColumnType("uniqueidentifier");
@@ -105,9 +105,6 @@ namespace CityFix.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Department")
                         .HasColumnType("int");
 
@@ -131,19 +128,6 @@ namespace CityFix.Migrations
                     b.Property<int>("PriorityLevel")
                         .HasColumnType("int");
 
-                    b.Property<string>("ResolutionImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResolutionNote")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTime?>("ResolvedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ResolvedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -156,11 +140,7 @@ namespace CityFix.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CreatedByUserId");
-
                     b.HasIndex("MunicipalityId");
-
-                    b.HasIndex("ResolvedByUserId");
 
                     b.ToTable("Incidents");
                 });
@@ -241,29 +221,15 @@ namespace CityFix.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CityFix.Models.AppUser", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("CityFix.Models.Municipality", "Municipality")
                         .WithMany()
                         .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CityFix.Models.AppUser", "ResolvedByUser")
-                        .WithMany()
-                        .HasForeignKey("ResolvedByUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("Category");
 
-                    b.Navigation("CreatedByUser");
-
                     b.Navigation("Municipality");
-
-                    b.Navigation("ResolvedByUser");
                 });
 
             modelBuilder.Entity("CityFix.Models.IncidentStatusHistory", b =>

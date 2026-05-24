@@ -77,6 +77,55 @@ using (var scope = app.Services.CreateScope())
         await dbContext.Users.AddAsync(superAdmin);
         await dbContext.SaveChangesAsync();
     }
+
+    await SeedMunicipalityAdmin(
+        dbContext,
+        municipalityName: "Skopje",
+        fullName: "Skopje Municipality Admin",
+        email: "skopje.admin@cityfix.com");
+
+    await SeedMunicipalityAdmin(
+        dbContext,
+        municipalityName: "Tetovo",
+        fullName: "Tetovo Municipality Admin",
+        email: "tetovo.admin@cityfix.com");
+}
+
+static async Task SeedMunicipalityAdmin(
+    ApplicationDbContext dbContext,
+    string municipalityName,
+    string fullName,
+    string email)
+{
+    var normalizedEmail = email.ToLowerInvariant();
+    var userExists = await dbContext.Users.AnyAsync(x => x.Email == normalizedEmail);
+
+    if (userExists)
+    {
+        return;
+    }
+
+    var municipality = await dbContext.Municipalities
+        .FirstOrDefaultAsync(x => x.Name == municipalityName);
+
+    if (municipality is null)
+    {
+        return;
+    }
+
+    var municipalityAdmin = new AppUser
+    {
+        Id = Guid.NewGuid(),
+        FullName = fullName,
+        Email = normalizedEmail,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+        Role = UserRole.MunicipalityAdmin,
+        MunicipalityId = municipality.Id,
+        CreatedAt = DateTime.UtcNow
+    };
+
+    await dbContext.Users.AddAsync(municipalityAdmin);
+    await dbContext.SaveChangesAsync();
 }
 
 // Configure the HTTP request pipeline.

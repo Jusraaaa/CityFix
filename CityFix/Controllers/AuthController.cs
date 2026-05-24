@@ -49,7 +49,7 @@ public class AuthController(ApplicationDbContext dbContext, IConfiguration confi
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
         var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == normalizedEmail);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user is null || !user.IsActive || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             return Unauthorized("Invalid email or password.");
         }
